@@ -1,93 +1,71 @@
-# skillopt
+# SkillOpt, critically — do we need to *train* our skills?
 
+A critical analysis of Microsoft Research's **SkillOpt** ([arXiv 2605.23904](https://arxiv.org/abs/2605.23904)),
+which optimizes an LLM agent's skill document the way you would train a model —
+gradient-like edits, a learning rate, and a validation gate — plus my own experiments
+running it on an in-car voice-assistant benchmark.
 
+> Research done during my Data Scientist internship at **Toyota Tsusho Mobility Informatics Pte. Ltd.**
+> (Jul 2026). I read the paper against its own tables and prompts, ran it on the in-house
+> benchmark from [ai-evaluation](https://github.com/sarujchutapp/ai-evaluation), and turned
+> the result into a talk.
 
-## Getting started
+**Slides:** [PDF](docs/presentation/Presentation_SkillOpt.pdf) · [PowerPoint, with speaker notes](docs/presentation/Presentation_SkillOpt.pptx)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## The critique in brief
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+The paper is well engineered and its core idea is sound. The argument is that the evidence
+for the *headline* claims does not survive checking against the paper's own data.
 
-## Add your files
+- **"Beats an expert human skill in 1–4 edits."** No run is ever seeded from the expert
+  skill — seeds range from a 16-token stub to 516 tokens. The claim is "grew from a stub and
+  finished above a separate document", not "improved an expert skill". One benchmark
+  (LiveMath) supplies 28.5 of the 51.8 marginal points over the human skill; without it the
+  advantage is +4.7.
+- **Skills only grow.** Every learned skill ends larger than it started (×2.5 to ×53.6).
+  The optimizer's prompts reward gap-filling and nothing penalizes length — yet skills exist
+  to *save* context. Fix: a token-cost term in the acceptance gate.
+- **Reusability and robustness are untested where it matters.** "Transfers across models"
+  is GPT→GPT only; results come from one split seed with no variance reported.
+- **Where it genuinely earns its keep:** weak or small target models. The hand-written skill
+  goes net negative outside the GPT family, while SkillOpt lifts Qwen3.5-4B on ALFWorld from
+  30.6 to 81.3. Rollout feedback finds failure modes no author would anticipate.
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+**Verdict — scoped, not dismissed.** For a small, stable domain with an expert available
+and a strong target model, hand-write the skill. For a weak or small target model, train it.
 
-```
-cd existing_repo
-git remote add origin https://github.com/sarujchutapp/skillopt.git
-git branch -M main
-git push -uf origin main
-```
+Full argument with citations: [`docs/research/optimizer_necessity_critique.md`](docs/research/optimizer_necessity_critique.md).
 
-## Integrate with your tools
+## My experiments
 
-* [Set up project integrations](https://github.com/sarujchutapp/skillopt/settings)
+Five SkillOpt runs on the in-car benchmark (Bedrock Sonnet as optimizer, local Ollama
+models as the target; command track = tool calls, chat track = grounded answers).
+Synthesis: [`docs/experiments/FINDINGS.md`](docs/experiments/FINDINGS.md) · per-run logs:
+[`docs/experiments/`](docs/experiments/).
 
-## Collaborate with your team
+- **The seed prompt mattered more than the optimizer — at first.** One format fix to the
+  starting prompt moved baseline accuracy 0.24 → 0.76; in runs 1–4 SkillOpt added nothing on
+  top and slightly overfit.
+- **Then a faithful run reversed it.** Run 5 matched the paper's setup (minimal seed,
+  4 epochs, 2:3:5 split, scalar gate, a capable temperature-0 target): SkillOpt lifted
+  held-out test accuracy 0.45 → 0.58 with no overfitting. The earlier verdicts were artifacts
+  of my setup, not the method.
+- **Aggregate scores hide mode collapse.** A flat "overall" score concealed the chat track
+  falling 0.78 → 0.00 while commands improved; per-track reporting exposed it.
+- **Small eval sets mislead.** At 9 items per track one item is 11%, so most early deltas
+  were noise — growing the corpus came first.
+- **Open question:** does it beat a strong *expert* seed? The four-cell experiment that would
+  settle this is designed in the critique; no published paper reports it.
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+## Repository contents
 
-## Test and Deploy
+| Path | What it is |
+|---|---|
+| [`docs/research/optimizer_necessity_critique.md`](docs/research/optimizer_necessity_critique.md) | The critique: thesis, assessment, mechanism notes, the decisive four-cell experiment |
+| [`docs/research/slm_agent_research_directions.md`](docs/research/slm_agent_research_directions.md) | Frontier scan of small-model agents and text-space optimization |
+| [`docs/research/dspy_overview.md`](docs/research/dspy_overview.md) | DSPy as a framework, and its optimizer menu |
+| [`docs/experiments/`](docs/experiments/) | Five SkillOpt runs: seed, best skill, config, scores, cost, findings |
+| [`docs/presentation/`](docs/presentation/) | The talk — PDF and PowerPoint (with speaker notes) |
 
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+The integration code (SkillOpt environments, data splits, Bedrock cost controls) lives in
+[ai-evaluation/integrations/skillopt](https://github.com/sarujchutapp/ai-evaluation/tree/main/integrations/skillopt).
