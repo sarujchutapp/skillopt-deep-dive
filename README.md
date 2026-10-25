@@ -5,7 +5,7 @@ which optimizes an LLM agent's skill document the way you would train a model â€
 gradient-like edits, a learning rate, and a validation gate â€” plus my own experiments
 running it on an in-car voice-assistant benchmark.
 
-> Research done during my Data Scientist internship at **Toyota Tsusho Mobility Informatics Pte. Ltd.**
+> Research done during my data science internship
 > (Jul 2026). I read the paper against its own tables and prompts, ran it on the in-house
 > benchmark from [ai-evaluation](https://github.com/sarujchutapp/ai-evaluation), and turned
 > the result into a talk.
