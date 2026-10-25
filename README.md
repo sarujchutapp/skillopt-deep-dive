@@ -7,7 +7,7 @@ running it on an in-car voice-assistant benchmark.
 
 > Research done during my data science internship
 > (Jul 2026). I read the paper against its own tables and prompts, ran it on the in-house
-> benchmark from [ai-evaluation](https://github.com/sarujchutapp/ai-evaluation), and turned
+> benchmark from [incar-assistant-eval](https://github.com/sarujchutapp/incar-assistant-eval), and turned
 > the result into a talk.
 
 **Slides:** [PDF](docs/presentation/Presentation_SkillOpt.pdf) · [PowerPoint, with speaker notes](docs/presentation/Presentation_SkillOpt.pptx)
@@ -68,4 +68,4 @@ Synthesis: [`docs/experiments/FINDINGS.md`](docs/experiments/FINDINGS.md) · per
 | [`docs/presentation/`](docs/presentation/) | The talk — PDF and PowerPoint (with speaker notes) |
 
 The integration code (SkillOpt environments, data splits, Bedrock cost controls) lives in
-[ai-evaluation/integrations/skillopt](https://github.com/sarujchutapp/ai-evaluation/tree/main/integrations/skillopt).
+[incar-assistant-eval/integrations/skillopt](https://github.com/sarujchutapp/incar-assistant-eval/tree/main/integrations/skillopt).

@@ -87,7 +87,7 @@ fairness fix (stops minority-mode failures being drowned), not a cheat.
 Sync repo → clone first (edits live in the repo; the run reads clone copies):
 
 ```powershell
-$repo  = "C:\path\to\ai-evaluation"
+$repo  = "C:\path\to\incar-assistant-eval"
 $clone = "C:\path\to\SkillOpt"
 
 Copy-Item "$repo\integrations\skillopt\config\incar_unified_bedrock.yaml" `

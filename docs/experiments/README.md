@@ -4,7 +4,7 @@
 
 Tracking log for SkillOpt runs on the `incar_unified` env. File paths in these notes
 (`integrations/skillopt/…`, `src/incar_eval/…`) refer to the
-[ai-evaluation](https://github.com/sarujchutapp/ai-evaluation) repo. One folder per run,
+[incar-assistant-eval](https://github.com/sarujchutapp/incar-assistant-eval) repo. One folder per run,
 each containing:
 
 - `initial.md` — the exact seed skill the run started from (`skill_v0000.md`)

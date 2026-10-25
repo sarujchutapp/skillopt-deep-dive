@@ -70,4 +70,4 @@ Three-way routing under a curated schema is a harder, more realistic version of 
 - Trust but Verify! A Survey on Verification Design for Test-time Scaling — arXiv 2508.16665
 - Skill-R1 (2605.09359), Skill-SD (2604.10674), Skill0.5 (2605.28424)
 
-Related docs: in [ai-evaluation](https://github.com/sarujchutapp/ai-evaluation) — `research/recent_trend.md` (eval-landscape survey), `research/roadmap.md`, `research/corpus_design.md`; here — [`../experiments/`](../experiments/) (SkillOpt runs).
+Related docs: in [incar-assistant-eval](https://github.com/sarujchutapp/incar-assistant-eval) — `research/recent_trend.md` (eval-landscape survey), `research/roadmap.md`, `research/corpus_design.md`; here — [`../experiments/`](../experiments/) (SkillOpt runs).
